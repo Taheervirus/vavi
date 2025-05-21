@@ -1,0 +1,173 @@
+<!DOCTYPE html><html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vavi Table Water</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('img/order.jpg'); /* Replace with your image path */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .order-form {
+            background-color: rgba(255, 255, 255, 0.9); /* Added opacity for better contrast */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+        .logo {
+            display: block;
+            margin: 0 auto 20px;
+            width: 150px;
+            height: 150px;
+        }
+        .order-form h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .form-group textarea {
+            resize: none;
+        }
+        .btn-submit {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-submit:hover {
+            background-color: #0056b3;
+        }
+        .btn-back-home {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .btn-back-home:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="order-form">
+        <img src="img/logo.png" alt="Logo" class="logo"> <!-- Add your logo path -->
+        <h2>VAVI - Online Order</h2>
+        <form id="orderForm">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="contact">Contact Number:</label>
+                <input type="text" id="contact" name="contact" required>
+            </div>
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <textarea id="address" name="address" rows="3" required></textarea>
+            </div>
+            <div id="product-container">
+                <div class="form-group product-item">
+                    <label for="bottle-size">Product:</label>
+                    <select name="bottle-size" required>
+                        <option value="Dispenser-19Liter">Dispenser 19Liter</option>
+                        <option value="Bottle-75cl">Bottle 75CL</option>
+                        <option value="Bottle-50CL">Bottle 50CL</option>
+                        <option value="Bottle-150cl">Bottle 35CL</option>
+                        <option value="Sachet-50CL">Sachet 50CL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="product-count">Quantity:</label>
+                    <input type="number" name="product-count" min="1" required>
+                </div>
+            </div>
+            <button type="button" style="color: red;" onclick="addProduct()">Add Another Product</button>
+            <button type="button" class="btn-submit" onclick="sendToWhatsApp()">Submit Order</button>
+        </form>
+    </div>
+    <a href="https://vavitablewater.com.ng" class="btn-back-home">Back to Home</a><script>
+    function addProduct() {
+        const productContainer = document.getElementById('product-container');
+        const productItem = document.createElement('div');
+        productItem.className = 'form-group product-item';
+        productItem.innerHTML = `
+            <label for="bottle-size">Product:</label>
+            <select name="bottle-size" required>
+                <option value="Dispenser-19Liter">Dispenser 19Liter</option>
+                <option value="75cl">75CL</option>
+                <option value="50CL">50CL</option>
+                <option value="150cl">35CL</option>
+                <option value="Sachet-50CL">Sachet 50CL</option>
+            </select>
+            <div class="form-group">
+                <label for="product-count">Quantity:</label>
+                <input type="number" name="product-count" min="1" required>
+            </div>
+        `;
+        productContainer.appendChild(productItem);
+    }
+
+    function sendToWhatsApp() {
+        const name = document.getElementById('name').value;
+        const contact = document.getElementById('contact').value;
+        const address = document.getElementById('address').value;
+        const productItems = document.querySelectorAll('.product-item select');
+        const productCounts = document.querySelectorAll('input[name="product-count"]');
+        let productDetails = "";
+
+        productItems.forEach((item, index) => {
+            const quantity = productCounts[index].value;
+            const product = item.value;
+            productDetails += `%0AProduct: ${product} - Quantity: ${quantity}`;
+        });
+
+        if (name && contact && address && productDetails) {
+            const message = `New Order:%0AName: ${name}%0AContact Number: ${contact}%0AAddress: ${address}${productDetails}`;
+            const whatsappUrl = `https://api.whatsapp.com/send?phone=+2348036927662&text=${message}`;
+            window.open(whatsappUrl, '_blank');
+        } else {
+            alert('Please fill all fields before submitting.');
+        }
+    }
+</script>
+
+</body>
+</html>
