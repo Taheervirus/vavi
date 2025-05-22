@@ -113,20 +113,54 @@
   <script>
     function addProduct() {
       const productContainer = document.getElementById('product-container');
+
       const productItem = document.createElement('div');
-      productItem.className = 'form-group product-item';
+      productItem.classList.add('form-group', 'product-item');
       productItem.innerHTML = `
         <label for="bottle-size">Product:</label>
         <select name="bottle-size" required>
           <option value="Dispenser-19Liter">Dispenser 19Liter</option>
-          <option value="75cl">75CL</option>
-          <option value="50CL">50CL</option>
-          <option value="150cl">35CL</option>
+          <option value="Bottle-75cl">Bottle 75CL</option>
+          <option value="Bottle-50CL">Bottle 50CL</option>
+          <option value="Bottle-150cl">Bottle 35CL</option>
           <option value="Sachet-50CL">Sachet 50CL</option>
         </select>
-        <div class="form-group">
-          <label for="product-count">Quantity:</label>
-          <input type="number" name="product-count" min="1" required />
-        </div>
       `;
-      productConta
+      productContainer.appendChild(productItem);
+
+      const quantityGroup = document.createElement('div');
+      quantityGroup.classList.add('form-group');
+      quantityGroup.innerHTML = `
+        <label for="product-count">Quantity:</label>
+        <input type="number" name="product-count" min="1" required />
+      `;
+      productContainer.appendChild(quantityGroup);
+    }
+
+    function sendToWhatsApp() {
+      const name = document.getElementById('name').value.trim();
+      const contact = document.getElementById('contact').value.trim();
+      const address = document.getElementById('address').value.trim();
+
+      const productItems = document.querySelectorAll('.product-item select');
+      const productCounts = document.querySelectorAll('input[name="product-count"]');
+
+      if (!name || !contact || !address || productItems.length === 0 || productCounts.length === 0) {
+        alert('Please fill all fields before submitting.');
+        return;
+      }
+
+      let productDetails = "";
+      productItems.forEach((item, index) => {
+        const quantity = productCounts[index].value;
+        const product = item.value;
+        productDetails += `%0AProduct: ${product} - Quantity: ${quantity}`;
+      });
+
+      const message = `New Order:%0AName: ${name}%0AContact Number: ${contact}%0AAddress: ${address}${productDetails}`;
+      const whatsappUrl = `https://api.whatsapp.com/send?phone=+2348036927662&text=${message}`;
+      window.open(whatsappUrl, '_blank');
+    }
+  </script>
+</body>
+</html>
